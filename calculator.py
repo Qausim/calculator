@@ -19,8 +19,12 @@ def evaluate_input(s):
         s = eval_par(s)
 
     # Get all digits and operators and separate
-    num_list = re.findall(r'(\d+)', s)
-    ops_list = re.findall(r'\D', s)
+    num_list = [match[1] for match in re.findall(r'([+-/*(])([-]?\d+)', '+' + s)]
+
+    if s[0] == '-':
+        ops_list = re.findall(r'[-+/*]', re.sub(r'([-+/*])(-)|\((-)(\d+)', lambda match: match.group()[0], s[1:]))
+    else:
+        ops_list = re.findall(r'[-+/*]', re.sub(r'([-+/*])(-)|\((-)(\d+)', lambda match: match.group()[0], s))
 
     # Perform multiplication operations
     handle_multiplications(num_list, ops_list)
@@ -84,12 +88,11 @@ def handle_multiplications(num_list, ops_list):
 def eval_par(s):
     open_ls = []
 
-    s = clear_spaces(s)
     for index in range(len(s)):
         if s[index] == '(':
             open_ls.append(index)
         elif s[index] == ')':
-            start = open_ls[-1]
+            start = open_ls.pop()
             res = s[:start] + str(evaluate_input(s[(start + 1): index]))
             if len(s[index:]) == 1:
                 return res
