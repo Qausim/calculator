@@ -53,9 +53,9 @@ def evaluate_input(s):
 
     result = float(num_list[0])
 
-    # Return int if result is a whole number else return float
+    # Return int if result is a whole number else return float (at most 10 decimal places)
     if int(str(result).split('.')[1]) > 0:
-        return result
+        return float("%.10f" % result)
     else:
         return int(result)
 
